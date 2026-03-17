@@ -1,0 +1,202 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
+
+:root {
+  --color-accent: #84cc16;
+  /* Lime-500, matches image green */
+  --color-bg: rgba(20, 20, 20, 0.95);
+  --color-text: #ffffff;
+  --line-height: 40px;
+  /* Connecting line length */
+}
+
+body {
+  visibility: hidden;
+  user-select: none;
+  overflow: hidden;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* THE DOT CURSOR (Replaces eye) */
+#eye {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  background: rgba(131, 204, 22, 0.527);
+  /* User's choice */
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+  pointer-events: none;
+  animation: breathe 3s infinite ease-in-out;
+}
+
+@keyframes breathe {
+
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1.3);
+    opacity: 0.4;
+  }
+}
+
+#eyeSvg {
+  display: none;
+}
+
+/* Active dot state */
+#eye.eye-hover {
+  background: var(--color-accent);
+  transform: translate(-50%, -50%) scale(1.5);
+  box-shadow: 0 0 10px var(--color-accent);
+}
+
+/* WRAPPER - Floating above center */
+#options-wrapper {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  /* Anchor to vertical center */
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column-reverse;
+  /* Build upwards */
+  align-items: center;
+  margin-bottom: var(--line-height);
+  /* Lift up by line height */
+  z-index: 99;
+}
+
+/* THE CONNECTING LINE (Tree Branch) */
+#options-wrapper::before {
+  content: '';
+  position: absolute;
+  bottom: calc(var(--line-height) * -1);
+  /* Reach down to dot */
+  left: 50%;
+  width: 2px;
+  height: 0;
+  background: var(--color-accent);
+  transform: translateX(-50%);
+  transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 8px var(--color-accent);
+  opacity: 0.8;
+}
+
+/* Only show line when menu is active (has children) */
+#options-wrapper:not(:empty)::before {
+  height: var(--line-height);
+}
+
+.option-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  border: 1px solid var(--color-accent);
+  padding: 10px 24px;
+  border-radius: 8px;
+  /* Rounded corners as per image */
+  color: var(--color-text);
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  min-width: 160px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  font-size: 14px;
+
+  /* Animation */
+  opacity: 0;
+  transform: translateY(15px) scale(0.95);
+  animation: popIn 0.3s forwards;
+}
+
+@keyframes popIn {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.option-container:hover {
+  background: var(--color-accent);
+  color: black;
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(132, 204, 22, 0.3);
+}
+
+.option-container:hover .option-icon {
+  color: black;
+}
+
+.option-icon {
+  font-size: 16px;
+  color: var(--color-accent);
+  margin-right: 12px;
+  transition: color 0.15s;
+}
+
+.option-label {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+/* 2-Option Branching Layout */
+#options-wrapper[data-count="2"] {
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 40px;
+  /* Space between branches */
+  margin-bottom: 70px;
+  /* Lift higher to accommodate diagonal branches */
+}
+
+/* Adjust the primary line (Left branch) */
+#options-wrapper[data-count="2"]::before {
+  height: 135px;
+  bottom: -70px;
+  /* Anchor at eye position */
+  transform: translateX(-50%) rotate(-50deg);
+  transform-origin: bottom center;
+  z-index: -1;
+}
+
+/* Create secondary line (Right branch) */
+#options-wrapper[data-count="2"]::after {
+  content: '';
+  position: absolute;
+  bottom: -70px;
+  /* Anchor at eye position */
+  left: 50%;
+  width: 2px;
+  height: 135px;
+  background: var(--color-accent);
+  box-shadow: 0 0 8px var(--color-accent);
+  opacity: 0.8;
+  transform: translateX(-50%) rotate(50deg);
+  transform-origin: bottom center;
+  z-index: -1;
+  animation: branchGrow 0.3s ease-out forwards;
+}
+
+@keyframes branchGrow {
+  from {
+    height: 0;
+  }
+
+  to {
+    height: 135px;
+  }
+}
